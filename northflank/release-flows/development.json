@@ -1,0 +1,27 @@
+{
+  "apiVersion": "v1",
+  "spec": {
+    "kind": "Workflow",
+    "spec": {
+      "type": "sequential",
+      "steps": [
+        {
+          "kind": "Release",
+          "spec": {
+            "type": "build",
+            "origin": {
+              "id": "build-service",
+              "branch": "master",
+              "build": "latest"
+            },
+            "target": {
+              "id": "deployment",
+              "type": "service"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$schema": "https://api.northflank.com/v1/schemas/release-flow"
+}
