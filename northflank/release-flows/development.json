@@ -6,6 +6,15 @@
       "type": "sequential",
       "steps": [
         {
+          "kind": "Build",
+          "spec": {
+            "id": "build-service",
+            "type": "service",
+            "branch": "master"
+          },
+          "condition": "success"
+        },
+        {
           "kind": "Release",
           "spec": {
             "type": "build",
