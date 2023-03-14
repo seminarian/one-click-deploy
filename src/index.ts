@@ -8,4 +8,5 @@ populateOnFirstRun(config)
   .catch((err) => {
     console.log(err);
     console.log("oiiifs");
+    process.exit(1);
   });
