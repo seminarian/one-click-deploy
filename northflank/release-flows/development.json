@@ -44,7 +44,7 @@
                     "build": "latest"
                   },
                   "target": {
-                    "id": "worker-dev",
+                    "id": "worker-dev1",
                     "type": "service"
                   }
                 }
