@@ -4,7 +4,55 @@
     "kind": "Workflow",
     "spec": {
       "type": "sequential",
-      "steps": []
+      "steps": [
+        {
+          "kind": "Build",
+          "spec": {
+            "id": "build-ecommerce-engine",
+            "type": "service",
+            "branch": "master"
+          },
+          "condition": "success"
+        },
+        {
+          "kind": "Workflow",
+          "spec": {
+            "type": "parallel",
+            "steps": [
+              {
+                "kind": "Release",
+                "spec": {
+                  "type": "build",
+                  "origin": {
+                    "id": "build-ecommerce-engine",
+                    "branch": "master",
+                    "build": "latest"
+                  },
+                  "target": {
+                    "id": "server-dev",
+                    "type": "service"
+                  }
+                }
+              },
+              {
+                "kind": "Release",
+                "spec": {
+                  "type": "build",
+                  "origin": {
+                    "id": "build-ecommerce-engine",
+                    "branch": "master",
+                    "build": "latest"
+                  },
+                  "target": {
+                    "id": "worker-dev",
+                    "type": "service"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   },
   "$schema": "https://api.northflank.com/v1/schemas/release-flow"
