@@ -7,5 +7,5 @@ populateOnFirstRun(config)
   .then(() => bootstrap(config))
   .catch((err) => {
     console.log(err);
-    console.log("oiii");
+    console.log("oiiif");
   });
