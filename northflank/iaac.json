@@ -336,7 +336,7 @@
               }
             ],
             "restrictions": {
-              "restricted": false,
+              "restricted": true,
               "nfObjects": [
                 {
                   "id": "server-dev",
@@ -395,7 +395,7 @@
               }
             ],
             "restrictions": {
-              "restricted": false,
+              "restricted": true,
               "nfObjects": [
                 {
                   "id": "server-staging",
@@ -454,7 +454,7 @@
               }
             ],
             "restrictions": {
-              "restricted": false,
+              "restricted": true,
               "nfObjects": [
                 {
                   "id": "server-prod",
