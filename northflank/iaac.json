@@ -1,0 +1,647 @@
+{
+  "apiVersion": "v1",
+  "spec": {
+    "kind": "Workflow",
+    "spec": {
+      "type": "sequential",
+      "steps": [
+        {
+          "kind": "BuildService",
+          "spec": {
+            "name": "build-ecommerce-engine",
+            "billing": {
+              "deploymentPlan": "nf-compute-10"
+            },
+            "vcsData": {
+              "projectUrl": "https://github.com/seminarian/one-click-deploy",
+              "projectType": "github"
+            },
+            "buildSettings": {
+              "dockerfile": {
+                "buildEngine": "kaniko",
+                "dockerFilePath": "/Dockerfile",
+                "dockerWorkDir": "/",
+                "useCache": false
+              }
+            },
+            "disabledCI": true,
+            "buildArguments": {}
+          }
+        },
+        {
+          "kind": "Workflow",
+          "spec": {
+            "type": "parallel",
+            "steps": [
+              {
+                "kind": "Workflow",
+                "spec": {
+                  "type": "sequential",
+                  "steps": [
+                    {
+                      "kind": "Addon",
+                      "spec": {
+                        "name": "database-dev",
+                        "type": "postgres",
+                        "version": "latest",
+                        "billing": {
+                          "deploymentPlan": "nf-compute-10",
+                          "storageClass": "ssd",
+                          "storage": 4096,
+                          "replicas": 1
+                        },
+                        "tlsEnabled": false,
+                        "externalAccessEnabled": false,
+                        "ipPolicies": [],
+                        "pitrEnabled": false
+                      }
+                    },
+                    {
+                      "kind": "Workflow",
+                      "spec": {
+                        "type": "parallel",
+                        "steps": [
+                          {
+                            "kind": "DeploymentService",
+                            "spec": {
+                              "name": "server-dev",
+                              "billing": {
+                                "deploymentPlan": "nf-compute-10"
+                              },
+                              "deployment": {
+                                "instances": 1,
+                                "docker": {
+                                  "configType": "customCommand",
+                                  "customCommand": "yarn start:server"
+                                },
+                                "releaseFlowControlled": false
+                              },
+                              "ports": [
+                                {
+                                  "name": "p01",
+                                  "internalPort": 3000,
+                                  "public": true,
+                                  "protocol": "HTTP",
+                                  "security": {
+                                    "credentials": [],
+                                    "policies": []
+                                  },
+                                  "domains": [],
+                                  "disableNfDomain": false
+                                }
+                              ],
+                              "runtimeEnvironment": {}
+                            }
+                          },
+                          {
+                            "kind": "DeploymentService",
+                            "spec": {
+                              "name": "worker-dev",
+                              "billing": {
+                                "deploymentPlan": "nf-compute-10"
+                              },
+                              "deployment": {
+                                "instances": 1,
+                                "docker": {
+                                  "configType": "customCommand",
+                                  "customCommand": "yarn start:worker"
+                                },
+                                "releaseFlowControlled": false
+                              },
+                              "ports": [],
+                              "runtimeEnvironment": {}
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "SecretGroup",
+                      "spec": {
+                        "name": "secrets-dev",
+                        "secretType": "environment-arguments",
+                        "priority": 10,
+                        "secrets": {
+                          "variables": {
+                            "STAGE": "DEV",
+                            "APP_ENV": "production",
+                            "COOKIE_SECRET": "${fn.randomSecret(32)}",
+                            "SUPERADMIN_USERNAME": "superadmin",
+                            "SUPERADMIN_PASSWORD": "superadmin",
+                            "DB_SCHEMA": "public",
+                            "AWS_BUCKET_NAME": "CHANGE_ME"
+                          }
+                        },
+                        "addonDependencies": [
+                          {
+                            "addonId": "database-dev",
+                            "keys": [
+                              {
+                                "keyName": "HOST",
+                                "aliases": [
+                                  "DB_HOST"
+                                ]
+                              },
+                              {
+                                "keyName": "PORT",
+                                "aliases": [
+                                  "DB_PORT"
+                                ]
+                              },
+                              {
+                                "keyName": "DATABASE",
+                                "aliases": [
+                                  "DB_NAME"
+                                ]
+                              },
+                              {
+                                "keyName": "USERNAME",
+                                "aliases": [
+                                  "DB_USERNAME"
+                                ]
+                              },
+                              {
+                                "keyName": "PASSWORD",
+                                "aliases": [
+                                  "DB_PASSWORD"
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "restrictions": {
+                          "restricted": false,
+                          "nfObjects": [
+                            {
+                              "id": "server-dev",
+                              "type": "service"
+                            },
+                            {
+                              "id": "worker-dev",
+                              "type": "service"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "Workflow",
+                "spec": {
+                  "type": "sequential",
+                  "steps": [
+                    {
+                      "kind": "Addon",
+                      "spec": {
+                        "name": "database-staging",
+                        "type": "postgres",
+                        "version": "latest",
+                        "billing": {
+                          "deploymentPlan": "nf-compute-10",
+                          "storageClass": "ssd",
+                          "storage": 4096,
+                          "replicas": 1
+                        },
+                        "tlsEnabled": false,
+                        "externalAccessEnabled": false,
+                        "ipPolicies": [],
+                        "pitrEnabled": false
+                      }
+                    },
+                    {
+                      "kind": "Workflow",
+                      "spec": {
+                        "type": "parallel",
+                        "steps": [
+                          {
+                            "kind": "DeploymentService",
+                            "spec": {
+                              "name": "server-staging",
+                              "billing": {
+                                "deploymentPlan": "nf-compute-10"
+                              },
+                              "deployment": {
+                                "instances": 1,
+                                "docker": {
+                                  "configType": "customCommand",
+                                  "customCommand": "yarn start:server"
+                                },
+                                "releaseFlowControlled": false
+                              },
+                              "ports": [
+                                {
+                                  "name": "p01",
+                                  "internalPort": 3000,
+                                  "public": true,
+                                  "protocol": "HTTP",
+                                  "security": {
+                                    "credentials": [],
+                                    "policies": []
+                                  },
+                                  "domains": [],
+                                  "disableNfDomain": false
+                                }
+                              ],
+                              "runtimeEnvironment": {}
+                            }
+                          },
+                          {
+                            "kind": "DeploymentService",
+                            "spec": {
+                              "name": "worker-staging",
+                              "billing": {
+                                "deploymentPlan": "nf-compute-10"
+                              },
+                              "deployment": {
+                                "instances": 1,
+                                "docker": {
+                                  "configType": "customCommand",
+                                  "customCommand": "yarn start:worker"
+                                },
+                                "releaseFlowControlled": false
+                              },
+                              "ports": [],
+                              "runtimeEnvironment": {}
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "SecretGroup",
+                      "spec": {
+                        "name": "secrets-staging",
+                        "secretType": "environment-arguments",
+                        "priority": 10,
+                        "secrets": {
+                          "variables": {
+                            "STAGE": "QA",
+                            "APP_ENV": "production",
+                            "COOKIE_SECRET": "${fn.randomSecret(32)}",
+                            "SUPERADMIN_USERNAME": "superadmin",
+                            "SUPERADMIN_PASSWORD": "superadmin",
+                            "DB_SCHEMA": "public",
+                            "AWS_BUCKET_NAME": "CHANGE_ME"
+                          }
+                        },
+                        "addonDependencies": [
+                          {
+                            "addonId": "database-staging",
+                            "keys": [
+                              {
+                                "keyName": "HOST",
+                                "aliases": [
+                                  "DB_HOST"
+                                ]
+                              },
+                              {
+                                "keyName": "PORT",
+                                "aliases": [
+                                  "DB_PORT"
+                                ]
+                              },
+                              {
+                                "keyName": "DATABASE",
+                                "aliases": [
+                                  "DB_NAME"
+                                ]
+                              },
+                              {
+                                "keyName": "USERNAME",
+                                "aliases": [
+                                  "DB_USERNAME"
+                                ]
+                              },
+                              {
+                                "keyName": "PASSWORD",
+                                "aliases": [
+                                  "DB_PASSWORD"
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "restrictions": {
+                          "restricted": false,
+                          "nfObjects": [
+                            {
+                              "id": "server-staging",
+                              "type": "service"
+                            },
+                            {
+                              "id": "worker-staging",
+                              "type": "service"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "Workflow",
+                "spec": {
+                  "type": "sequential",
+                  "steps": [
+                    {
+                      "kind": "Addon",
+                      "spec": {
+                        "name": "database-prod",
+                        "type": "postgres",
+                        "version": "latest",
+                        "billing": {
+                          "deploymentPlan": "nf-compute-10",
+                          "storageClass": "ssd",
+                          "storage": 4096,
+                          "replicas": 1
+                        },
+                        "tlsEnabled": false,
+                        "externalAccessEnabled": false,
+                        "ipPolicies": [],
+                        "pitrEnabled": false
+                      }
+                    },
+                    {
+                      "kind": "Workflow",
+                      "spec": {
+                        "type": "parallel",
+                        "steps": [
+                          {
+                            "kind": "DeploymentService",
+                            "spec": {
+                              "name": "server-prod",
+                              "billing": {
+                                "deploymentPlan": "nf-compute-10"
+                              },
+                              "deployment": {
+                                "instances": 1,
+                                "docker": {
+                                  "configType": "customCommand",
+                                  "customCommand": "yarn start:server"
+                                },
+                                "releaseFlowControlled": false
+                              },
+                              "ports": [
+                                {
+                                  "name": "p01",
+                                  "internalPort": 3000,
+                                  "public": true,
+                                  "protocol": "HTTP",
+                                  "security": {
+                                    "credentials": [],
+                                    "policies": []
+                                  },
+                                  "domains": [],
+                                  "disableNfDomain": false
+                                }
+                              ],
+                              "runtimeEnvironment": {}
+                            }
+                          },
+                          {
+                            "kind": "DeploymentService",
+                            "spec": {
+                              "name": "worker-prod",
+                              "billing": {
+                                "deploymentPlan": "nf-compute-10"
+                              },
+                              "deployment": {
+                                "instances": 1,
+                                "docker": {
+                                  "configType": "customCommand",
+                                  "customCommand": "yarn start:worker"
+                                },
+                                "releaseFlowControlled": false
+                              },
+                              "ports": [],
+                              "runtimeEnvironment": {}
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "SecretGroup",
+                      "spec": {
+                        "name": "secrets-prod",
+                        "secretType": "environment-arguments",
+                        "priority": 10,
+                        "secrets": {
+                          "variables": {
+                            "STAGE": "DEV",
+                            "APP_ENV": "production",
+                            "COOKIE_SECRET": "${fn.randomSecret(32)}",
+                            "SUPERADMIN_USERNAME": "superadmin",
+                            "SUPERADMIN_PASSWORD": "superadmin",
+                            "DB_SCHEMA": "public",
+                            "AWS_BUCKET_NAME": "CHANGE_ME"
+                          }
+                        },
+                        "addonDependencies": [
+                          {
+                            "addonId": "database-prod",
+                            "keys": [
+                              {
+                                "keyName": "HOST",
+                                "aliases": [
+                                  "DB_HOST"
+                                ]
+                              },
+                              {
+                                "keyName": "PORT",
+                                "aliases": [
+                                  "DB_PORT"
+                                ]
+                              },
+                              {
+                                "keyName": "DATABASE",
+                                "aliases": [
+                                  "DB_NAME"
+                                ]
+                              },
+                              {
+                                "keyName": "USERNAME",
+                                "aliases": [
+                                  "DB_USERNAME"
+                                ]
+                              },
+                              {
+                                "keyName": "PASSWORD",
+                                "aliases": [
+                                  "DB_PASSWORD"
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "restrictions": {
+                          "restricted": false,
+                          "nfObjects": [
+                            {
+                              "id": "server-prod",
+                              "type": "service"
+                            },
+                            {
+                              "id": "worker-prod",
+                              "type": "service"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "SecretGroup",
+          "spec": {
+            "name": "secrets-aws",
+            "secretType": "environment-arguments",
+            "priority": 10,
+            "secrets": {
+              "variables": {
+                "AWS_ACCESS_KEY_ID": "CHANGE_ME",
+                "AWS_SECRET_ACCESS_KEY": "CHANGE_ME"
+              }
+            },
+            "addonDependencies": [
+              {
+                "addonId": "database-dev",
+                "keys": [
+                  {
+                    "keyName": "HOST",
+                    "aliases": [
+                      "DB_HOST"
+                    ]
+                  },
+                  {
+                    "keyName": "PORT",
+                    "aliases": [
+                      "DB_PORT"
+                    ]
+                  },
+                  {
+                    "keyName": "DATABASE",
+                    "aliases": [
+                      "DB_NAME"
+                    ]
+                  },
+                  {
+                    "keyName": "USERNAME",
+                    "aliases": [
+                      "DB_USERNAME"
+                    ]
+                  },
+                  {
+                    "keyName": "PASSWORD",
+                    "aliases": [
+                      "DB_PASSWORD"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "restrictions": {
+              "restricted": true,
+              "nfObjects": [
+                {
+                  "id": "server-dev",
+                  "type": "service"
+                },
+                {
+                  "id": "server-staging",
+                  "type": "service"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "kind": "SecretGroup",
+          "spec": {
+            "name": "secrets-github",
+            "secretType": "environment-arguments",
+            "priority": 10,
+            "secrets": {
+              "variables": {
+                "GH_TOKEN": "CHANGE_ME"
+              }
+            },
+            "restrictions": {
+              "restricted": true,
+              "nfObjects": [
+                {
+                  "id": "build-ecommerce-engine",
+                  "type": "service"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "kind": "Pipeline",
+          "spec": {
+            "name": "Ecommerce pipeline",
+            "description": "Beschrijving",
+            "nfObjects": []
+          }
+        },
+        {
+          "kind": "Pipeline",
+          "spec": {
+            "name": "Ecommerce pipeline",
+            "description": "Beschrijving",
+            "nfObjects": [
+              {
+                "id": "database-dev",
+                "type": "addon",
+                "stage": "Development"
+              },
+              {
+                "id": "server-dev",
+                "type": "service",
+                "stage": "Development"
+              },
+              {
+                "id": "worker-dev",
+                "type": "service",
+                "stage": "Development"
+              },
+              {
+                "id": "database-staging",
+                "type": "addon",
+                "stage": "Staging"
+              },
+              {
+                "id": "server-staging",
+                "type": "service",
+                "stage": "Staging"
+              },
+              {
+                "id": "worker-staging",
+                "type": "service",
+                "stage": "Staging"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "name": "Vendure Ecommerce-engine",
+  "description": "",
+  "project": {
+    "spec": {
+      "name": "Ecommerce engine",
+      "region": "europe-west",
+      "description": ""
+    }
+  },
+  "$schema": "https://api.northflank.com/v1/schemas/template"
+}
