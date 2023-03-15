@@ -530,7 +530,7 @@
             "priority": 10,
             "secrets": {
               "variables": {
-                "GH_TOKEN": "CHANGE_ME"
+                "GH_TOKEN": "${args.GH_TOKEN}"
               }
             },
             "restrictions": {
