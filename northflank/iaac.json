@@ -389,7 +389,7 @@
                                 "deploymentPlan": "nf-compute-10"
                               },
                               "deployment": {
-                                "instances": 1,
+                                "instances": 0,
                                 "docker": {
                                   "configType": "customCommand",
                                   "customCommand": "yarn start:worker"
@@ -594,7 +594,7 @@
       ]
     }
   },
-  "name": "Vendure Ecommerce-engine2",
+  "name": "Vendure Ecommerce-engine",
   "description": "",
   "project": {
     "spec": {
