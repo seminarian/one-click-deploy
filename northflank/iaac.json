@@ -301,11 +301,11 @@
               "variables": {
                 "STAGE": "DEV",
                 "APP_ENV": "production",
-                "COOKIE_SECRET": "${COOKIE_SECRET_DEV}",
+                "COOKIE_SECRET": "${args.COOKIE_SECRET_DEV}",
                 "SUPERADMIN_USERNAME": "superadmin",
-                "SUPERADMIN_PASSWORD": "${SUPERADMIN_PASSWORD_DEV}",
+                "SUPERADMIN_PASSWORD": "${args.SUPERADMIN_PASSWORD_DEV}",
                 "DB_SCHEMA": "public",
-                "AWS_BUCKET_NAME": "${AWS_BUCKET_NAME_DEV}"
+                "AWS_BUCKET_NAME": "${args.AWS_BUCKET_NAME_DEV}"
               }
             },
             "addonDependencies": [
@@ -360,11 +360,11 @@
               "variables": {
                 "STAGE": "QA",
                 "APP_ENV": "production",
-                "COOKIE_SECRET": "${COOKIE_SECRET_STAGING}",
+                "COOKIE_SECRET": "${args.COOKIE_SECRET_STAGING}",
                 "SUPERADMIN_USERNAME": "superadmin",
-                "SUPERADMIN_PASSWORD": "${SUPERADMIN_PASSWORD_STAGING}",
+                "SUPERADMIN_PASSWORD": "${args.SUPERADMIN_PASSWORD_STAGING}",
                 "DB_SCHEMA": "public",
-                "AWS_BUCKET_NAME": "${AWS_BUCKET_NAME_STAGING}"
+                "AWS_BUCKET_NAME": "${args.AWS_BUCKET_NAME_STAGING}"
               }
             },
             "addonDependencies": [
@@ -419,11 +419,11 @@
               "variables": {
                 "STAGE": "DEV",
                 "APP_ENV": "production",
-                "COOKIE_SECRET": "${COOKIE_SECRET_PROD}",
+                "COOKIE_SECRET": "${args.COOKIE_SECRET_PROD}",
                 "SUPERADMIN_USERNAME": "superadmin",
-                "SUPERADMIN_PASSWORD": "${SUPERADMIN_PASSWORD_PROD}",
+                "SUPERADMIN_PASSWORD": "${args.SUPERADMIN_PASSWORD_PROD}",
                 "DB_SCHEMA": "public",
-                "AWS_BUCKET_NAME": "${AWS_BUCKET_NAME_PROD}"
+                "AWS_BUCKET_NAME": "${args.AWS_BUCKET_NAME_PROD}"
               }
             },
             "addonDependencies": [
@@ -476,8 +476,8 @@
             "priority": 10,
             "secrets": {
               "variables": {
-                "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
-                "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}"
+                "AWS_ACCESS_KEY_ID": "${args.AWS_ACCESS_KEY_ID}",
+                "AWS_SECRET_ACCESS_KEY": "${args.AWS_SECRET_ACCESS_KEY}"
               }
             },
             "addonDependencies": [
