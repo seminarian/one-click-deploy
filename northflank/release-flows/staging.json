@@ -12,7 +12,7 @@
             "origin": {
               "id": "build-ecommerce-engine",
               "branch": "master",
-              "build": "rare-drop-6102"
+              "build": "latest"
             },
             "target": {
               "id": "server-staging",
