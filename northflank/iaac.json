@@ -114,65 +114,6 @@
                           }
                         ]
                       }
-                    },
-                    {
-                      "kind": "SecretGroup",
-                      "spec": {
-                        "name": "secrets-dev",
-                        "secretType": "environment-arguments",
-                        "priority": 10,
-                        "secrets": {
-                          "variables": {
-                            "STAGE": "DEV",
-                            "APP_ENV": "production",
-                            "COOKIE_SECRET": "${fn.randomSecret(32)}",
-                            "SUPERADMIN_USERNAME": "superadmin",
-                            "SUPERADMIN_PASSWORD": "superadmin",
-                            "DB_SCHEMA": "public",
-                            "AWS_BUCKET_NAME": "CHANGE_ME"
-                          }
-                        },
-                        "addonDependencies": [
-                          {
-                            "addonId": "database-dev",
-                            "keys": [
-                              {
-                                "keyName": "HOST",
-                                "aliases": ["DB_HOST"]
-                              },
-                              {
-                                "keyName": "PORT",
-                                "aliases": ["DB_PORT"]
-                              },
-                              {
-                                "keyName": "DATABASE",
-                                "aliases": ["DB_NAME"]
-                              },
-                              {
-                                "keyName": "USERNAME",
-                                "aliases": ["DB_USERNAME"]
-                              },
-                              {
-                                "keyName": "PASSWORD",
-                                "aliases": ["DB_PASSWORD"]
-                              }
-                            ]
-                          }
-                        ],
-                        "restrictions": {
-                          "restricted": false,
-                          "nfObjects": [
-                            {
-                              "id": "server-dev",
-                              "type": "service"
-                            },
-                            {
-                              "id": "worker-dev",
-                              "type": "service"
-                            }
-                          ]
-                        }
-                      }
                     }
                   ]
                 }
@@ -257,65 +198,6 @@
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "kind": "SecretGroup",
-                      "spec": {
-                        "name": "secrets-staging",
-                        "secretType": "environment-arguments",
-                        "priority": 10,
-                        "secrets": {
-                          "variables": {
-                            "STAGE": "QA",
-                            "APP_ENV": "production",
-                            "COOKIE_SECRET": "${fn.randomSecret(32)}",
-                            "SUPERADMIN_USERNAME": "superadmin",
-                            "SUPERADMIN_PASSWORD": "superadmin",
-                            "DB_SCHEMA": "public",
-                            "AWS_BUCKET_NAME": "CHANGE_ME"
-                          }
-                        },
-                        "addonDependencies": [
-                          {
-                            "addonId": "database-staging",
-                            "keys": [
-                              {
-                                "keyName": "HOST",
-                                "aliases": ["DB_HOST"]
-                              },
-                              {
-                                "keyName": "PORT",
-                                "aliases": ["DB_PORT"]
-                              },
-                              {
-                                "keyName": "DATABASE",
-                                "aliases": ["DB_NAME"]
-                              },
-                              {
-                                "keyName": "USERNAME",
-                                "aliases": ["DB_USERNAME"]
-                              },
-                              {
-                                "keyName": "PASSWORD",
-                                "aliases": ["DB_PASSWORD"]
-                              }
-                            ]
-                          }
-                        ],
-                        "restrictions": {
-                          "restricted": false,
-                          "nfObjects": [
-                            {
-                              "id": "server-staging",
-                              "type": "service"
-                            },
-                            {
-                              "id": "worker-staging",
-                              "type": "service"
-                            }
-                          ]
-                        }
                       }
                     }
                   ]
@@ -402,70 +284,218 @@
                           }
                         ]
                       }
-                    },
-                    {
-                      "kind": "SecretGroup",
-                      "spec": {
-                        "name": "secrets-prod",
-                        "secretType": "environment-arguments",
-                        "priority": 10,
-                        "secrets": {
-                          "variables": {
-                            "STAGE": "DEV",
-                            "APP_ENV": "production",
-                            "COOKIE_SECRET": "${fn.randomSecret(32)}",
-                            "SUPERADMIN_USERNAME": "superadmin",
-                            "SUPERADMIN_PASSWORD": "superadmin",
-                            "DB_SCHEMA": "public",
-                            "AWS_BUCKET_NAME": "CHANGE_ME"
-                          }
-                        },
-                        "addonDependencies": [
-                          {
-                            "addonId": "database-prod",
-                            "keys": [
-                              {
-                                "keyName": "HOST",
-                                "aliases": ["DB_HOST"]
-                              },
-                              {
-                                "keyName": "PORT",
-                                "aliases": ["DB_PORT"]
-                              },
-                              {
-                                "keyName": "DATABASE",
-                                "aliases": ["DB_NAME"]
-                              },
-                              {
-                                "keyName": "USERNAME",
-                                "aliases": ["DB_USERNAME"]
-                              },
-                              {
-                                "keyName": "PASSWORD",
-                                "aliases": ["DB_PASSWORD"]
-                              }
-                            ]
-                          }
-                        ],
-                        "restrictions": {
-                          "restricted": false,
-                          "nfObjects": [
-                            {
-                              "id": "server-prod",
-                              "type": "service"
-                            },
-                            {
-                              "id": "worker-prod",
-                              "type": "service"
-                            }
-                          ]
-                        }
-                      }
                     }
                   ]
                 }
               }
             ]
+          }
+        },
+        {
+          "kind": "SecretGroup",
+          "spec": {
+            "name": "secrets-prod",
+            "secretType": "environment-arguments",
+            "priority": 10,
+            "secrets": {
+              "variables": {
+                "STAGE": "DEV",
+                "APP_ENV": "production",
+                "COOKIE_SECRET": "${fn.randomSecret(32)}",
+                "SUPERADMIN_USERNAME": "superadmin",
+                "SUPERADMIN_PASSWORD": "superadmin",
+                "DB_SCHEMA": "public",
+                "AWS_BUCKET_NAME": "CHANGE_ME"
+              }
+            },
+            "addonDependencies": [
+              {
+                "addonId": "database-prod",
+                "keys": [
+                  {
+                    "keyName": "HOST",
+                    "aliases": [
+                      "DB_HOST"
+                    ]
+                  },
+                  {
+                    "keyName": "PORT",
+                    "aliases": [
+                      "DB_PORT"
+                    ]
+                  },
+                  {
+                    "keyName": "DATABASE",
+                    "aliases": [
+                      "DB_NAME"
+                    ]
+                  },
+                  {
+                    "keyName": "USERNAME",
+                    "aliases": [
+                      "DB_USERNAME"
+                    ]
+                  },
+                  {
+                    "keyName": "PASSWORD",
+                    "aliases": [
+                      "DB_PASSWORD"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "restrictions": {
+              "restricted": false,
+              "nfObjects": [
+                {
+                  "id": "server-prod",
+                  "type": "service"
+                },
+                {
+                  "id": "worker-prod",
+                  "type": "service"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "kind": "SecretGroup",
+          "spec": {
+            "name": "secrets-staging",
+            "secretType": "environment-arguments",
+            "priority": 10,
+            "secrets": {
+              "variables": {
+                "STAGE": "QA",
+                "APP_ENV": "production",
+                "COOKIE_SECRET": "${fn.randomSecret(32)}",
+                "SUPERADMIN_USERNAME": "superadmin",
+                "SUPERADMIN_PASSWORD": "superadmin",
+                "DB_SCHEMA": "public",
+                "AWS_BUCKET_NAME": "CHANGE_ME"
+              }
+            },
+            "addonDependencies": [
+              {
+                "addonId": "database-staging",
+                "keys": [
+                  {
+                    "keyName": "HOST",
+                    "aliases": [
+                      "DB_HOST"
+                    ]
+                  },
+                  {
+                    "keyName": "PORT",
+                    "aliases": [
+                      "DB_PORT"
+                    ]
+                  },
+                  {
+                    "keyName": "DATABASE",
+                    "aliases": [
+                      "DB_NAME"
+                    ]
+                  },
+                  {
+                    "keyName": "USERNAME",
+                    "aliases": [
+                      "DB_USERNAME"
+                    ]
+                  },
+                  {
+                    "keyName": "PASSWORD",
+                    "aliases": [
+                      "DB_PASSWORD"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "restrictions": {
+              "restricted": false,
+              "nfObjects": [
+                {
+                  "id": "server-staging",
+                  "type": "service"
+                },
+                {
+                  "id": "worker-staging",
+                  "type": "service"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "kind": "SecretGroup",
+          "spec": {
+            "name": "secrets-dev",
+            "secretType": "environment-arguments",
+            "priority": 10,
+            "secrets": {
+              "variables": {
+                "STAGE": "DEV",
+                "APP_ENV": "production",
+                "COOKIE_SECRET": "${fn.randomSecret(32)}",
+                "SUPERADMIN_USERNAME": "superadmin",
+                "SUPERADMIN_PASSWORD": "superadmin",
+                "DB_SCHEMA": "public",
+                "AWS_BUCKET_NAME": "CHANGE_ME"
+              }
+            },
+            "addonDependencies": [
+              {
+                "addonId": "database-dev",
+                "keys": [
+                  {
+                    "keyName": "HOST",
+                    "aliases": [
+                      "DB_HOST"
+                    ]
+                  },
+                  {
+                    "keyName": "PORT",
+                    "aliases": [
+                      "DB_PORT"
+                    ]
+                  },
+                  {
+                    "keyName": "DATABASE",
+                    "aliases": [
+                      "DB_NAME"
+                    ]
+                  },
+                  {
+                    "keyName": "USERNAME",
+                    "aliases": [
+                      "DB_USERNAME"
+                    ]
+                  },
+                  {
+                    "keyName": "PASSWORD",
+                    "aliases": [
+                      "DB_PASSWORD"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "restrictions": {
+              "restricted": false,
+              "nfObjects": [
+                {
+                  "id": "server-dev",
+                  "type": "service"
+                },
+                {
+                  "id": "worker-dev",
+                  "type": "service"
+                }
+              ]
+            }
           }
         },
         {
@@ -486,23 +516,33 @@
                 "keys": [
                   {
                     "keyName": "HOST",
-                    "aliases": ["DB_HOST"]
+                    "aliases": [
+                      "DB_HOST"
+                    ]
                   },
                   {
                     "keyName": "PORT",
-                    "aliases": ["DB_PORT"]
+                    "aliases": [
+                      "DB_PORT"
+                    ]
                   },
                   {
                     "keyName": "DATABASE",
-                    "aliases": ["DB_NAME"]
+                    "aliases": [
+                      "DB_NAME"
+                    ]
                   },
                   {
                     "keyName": "USERNAME",
-                    "aliases": ["DB_USERNAME"]
+                    "aliases": [
+                      "DB_USERNAME"
+                    ]
                   },
                   {
                     "keyName": "PASSWORD",
-                    "aliases": ["DB_PASSWORD"]
+                    "aliases": [
+                      "DB_PASSWORD"
+                    ]
                   }
                 ]
               }
