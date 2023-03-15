@@ -4,7 +4,23 @@
     "kind": "Workflow",
     "spec": {
       "type": "sequential",
-      "steps": []
+      "steps": [
+        {
+          "kind": "Release",
+          "spec": {
+            "type": "build",
+            "origin": {
+              "id": "build-ecommerce-engine",
+              "branch": "master",
+              "build": "latest"
+            },
+            "target": {
+              "id": "server-staging",
+              "type": "service"
+            }
+          }
+        }
+      ]
     }
   },
   "$schema": "https://api.northflank.com/v1/schemas/release-flow"
